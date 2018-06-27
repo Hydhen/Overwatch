@@ -1,12 +1,56 @@
-﻿<Window x:Class="Overwatch.MainWindow"
+﻿<Window x:Class="BackgroundApplication.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Overwatch"
+        xmlns:local="clr-namespace:BackgroundApplication"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
-        
-    </Grid>
+        Title="MainWindow" Height="500" Width="500"
+        WindowStyle="None" AllowsTransparency="True"
+        ResizeMode="CanResizeWithGrip">
+
+    <Window.Background>
+
+        <SolidColorBrush Color="Black" Opacity=".2"/>
+
+    </Window.Background>
+
+    <Border Margin="10">
+
+        <Grid>
+
+            <StackPanel>
+
+                <TextBlock Foreground="WhiteSmoke" FontSize="20"
+                           HorizontalAlignment="Center" VerticalAlignment="Top"
+                           Text="Overwatch" MouseDown="Window_MouseDown"/>
+
+                <Grid Margin="0 10 0 0">
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Grid.Column="1" Foreground="WhiteSmoke" FontSize="12" Margin="0 0 10 0"
+                               HorizontalAlignment="Right" VerticalAlignment="Center"
+                               Text="CPU:"/>
+
+                    <TextBlock Grid.Column="2" Foreground="WhiteSmoke" FontSize="12" Margin="10 0 0 0"
+                               HorizontalAlignment="Left" VerticalAlignment="Center"
+                               Text="50%"/>
+
+
+
+                </Grid>
+                
+
+            </StackPanel>
+
+        </Grid>
+
+    </Border>
+
 </Window>
