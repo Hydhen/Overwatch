@@ -29,7 +29,8 @@ namespace BackgroundApplication
         private Timer Timer = new Timer();
 
         // Performance Counters
-        private PerformanceCounter CPU = new PerformanceCounter("Processor", "% Processor Time", "_Total");
+        private PerformanceCounter CPU = null;
+        private PerformanceCounter RAM = null;
 
 
         #region Constructor
@@ -39,17 +40,51 @@ namespace BackgroundApplication
             Timer.Interval = Interval;
             Timer.Elapsed += OnTimerTick;
             Timer.Start();
-        }
 
+            try
+            {
+                CPU = new PerformanceCounter("Processor", "% Processor Time", "_Total");
+                RAM = new PerformanceCounter("Memory", "Available MBytes");
+            }
+            catch (Exception e)
+            {
+                // TODO: Handle exception
+                Debug.Print(e.Message);
+            }
+
+            Loaded += (o, e) => RefreshStaticValues();
+        }
+        
         #endregion
 
 
-
-        private void RefreshValues()
+        /// <summary>
+        /// Global refresh method for dynamic fields called on Timer tick
+        /// </summary>
+        private void RefreshDynamicValues()
         {
-            Dispatcher.BeginInvoke((Action)(() => { CPUFieldValue.Text = CPU.NextValue().ToString("00.00") + " %"; }));
-        }
+            Dispatcher.BeginInvoke((Action)(() => {
+                if (CPU != null)
+                    CPUFieldValue.Text = CPU.NextValue().ToString("00.00") + " %";
+                else
+                    CPUFieldValue.Text = "??";
+            }));
 
+            Dispatcher.BeginInvoke((Action)(() => {
+                if (RAM != null)
+                    RAMFieldValue.Text = RAM.NextValue().ToString() + " Mbytes";
+                else
+                    RAMFieldValue.Text = "??";
+            }));
+        }
+        
+        /// <summary>
+        /// Global refresh method for static fields called on demand
+        /// </summary>
+        private void RefreshStaticValues()
+        {
+            MachineNameFieldValue.Text = Environment.MachineName;
+        }
 
 
         #region Callbacks
@@ -64,7 +99,7 @@ namespace BackgroundApplication
             // Stop Timer so it doesn't run while computing
             Timer.Stop();
 
-            RefreshValues();
+            RefreshDynamicValues();
 
             // Start it again
             Timer.Start();
@@ -75,10 +110,20 @@ namespace BackgroundApplication
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void Window_MouseDown(object sender, MouseButtonEventArgs e)
+        private void Window_Drag(object sender, MouseButtonEventArgs e)
         {
             if (e.ChangedButton == MouseButton.Left)
                 this.DragMove();
+        }
+
+        /// <summary>
+        /// Handle close action
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Window_Close(object sender, MouseButtonEventArgs e)
+        {
+            Close();
         }
 
         #endregion
